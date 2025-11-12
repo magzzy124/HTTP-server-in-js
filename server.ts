@@ -1,7 +1,7 @@
 import net from "net";
 
 const PORT = 3000;
-const HOST = "127.0.0.1"; // Loopback address for local testing
+const HOST = "127.0.0.1";
 
 const server = net.createServer((socket) => {
   console.log(
