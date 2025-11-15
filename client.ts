@@ -12,7 +12,13 @@ const client = net.createConnection({ host: HOST, port: PORT }, () => {
       console.error(err);
       return;
     }
-    client.write(data);
+    // client.wrap(data);
+    const splitData = [data.slice(0, 5), data.slice(5)];
+    splitData.forEach((text, index) => {
+      setTimeout(() => {
+        client.write(text);
+      }, 100 * index);
+    });
   });
 });
 

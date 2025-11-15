@@ -1,7 +1,8 @@
 POST /coffee HTTP/1.1
-Host: localhost:42069
+Host: localhost:42069     
 User-Agent: curl/7.81.0
+User-Agent: curl/7.81.0
+Content-Length:5
 Accept: */*
-Content-Length: 21
 
-{"flavor":"dark mode"}
+abcde
