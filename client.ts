@@ -3,6 +3,7 @@ import fs from "fs";
 
 const HOST = "127.0.0.1";
 const PORT = 3000;
+const SEPARATOR = "\r\n";
 
 const client = net.createConnection({ host: HOST, port: PORT }, () => {
   console.log("connected to", `${HOST}:${PORT}`);
@@ -13,10 +14,25 @@ const client = net.createConnection({ host: HOST, port: PORT }, () => {
       return;
     }
     // client.wrap(data);
-    const splitData = [data.slice(0, 5), data.slice(5)];
-    splitData.forEach((text, index) => {
+    const splitBody = data.split(SEPARATOR + SEPARATOR);
+    const headersAndData = splitBody[0];
+    const body = splitBody[1];
+
+    // Send headers and data all at once
+    client.write(headersAndData + SEPARATOR + SEPARATOR);
+
+    // Send body in chunks
+    const bodyChunks = [
+      body.slice(0, Math.ceil(body.length / 3)),
+      body.slice(Math.ceil(body.length / 3), 2 * Math.ceil(body.length / 3)),
+      body.slice(2 * Math.ceil(body.length / 3)),
+    ];
+
+    bodyChunks.forEach((chunk, index) => {
       setTimeout(() => {
-        client.write(text);
+        const isLastChunk = index === bodyChunks.length - 1;
+        client.write(isLastChunk ? chunk.trimEnd() : chunk); // Remove trailing CRLF only for the last chunk
+        console.log(chunk);
       }, 100 * index);
     });
   });
